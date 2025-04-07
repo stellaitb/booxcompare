@@ -1,0 +1,18 @@
+Model,Image File,Price ($),Released,Display Type,Display Size (inch),Resolution (pixels W×H),Color Display?,Pixel Density (PPI),Screen Light?,Stylus Input?,Operating System,Internal Storage,RAM,BOOX Super Refresh?,Battery Capacity (mAh),Weight (gram),MicroSD Card Reader?
+Note Max,notemax.jpg,649.99,2025,Carta 1300,13.3,2400×3200,No,300,No,Yes,Android 13,128 GB,6 GB,No,3700mAh,615g,No
+Palma 2,palma2.jpg,279.99,2024,Carta 1200,6.13,824×1648,No,300,Yes,No,Android 13,128 GB,6 GB,Yes,3950mAh,170g,Yes
+Note Air 4 C,noteair4c.jpg,499.99,2024,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 13,64 GB,6 GB,Yes,3700mAh,420g,Yes
+Tab Ultra C Pro,tabultracpro.jpg,599.99,2023,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 12,128 GB,6 GB,Yes,4600mAh,450g,Yes
+Tab Ultra C,tabultrac.jpg,599.99,2023,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 11,128 GB,4 GB,Yes,6300mAh,480g,Yes
+Note Air 3 C,noteair3c.jpg,499.99,2023,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 12,64 GB,4 GB,Yes,3700mAh,430g,Yes
+Tab X,tabx.jpg,799.99,2023,Carta 1250,13.3,1650×2200,No,207,Yes,Yes,Android 11,128 GB,6 GB,Yes,6300mAh,560g,No
+Tab Ultra,tabultra.jpg,499.99,2022,Carta,10.3,1872×1404,No,227,Yes,Yes,Android 11,128 GB,4 GB,No,6300mAh,480g,Yes
+Go Color 7,gocolor7.jpg,249.99,2024,Kaleido 3,7,1680×1264,Yes,300,Yes,No,Android 12,64 GB,4 GB,No,2300mAh,195g,Yes
+Tab Mini C,tabminic.jpg,349.99,2023,Kaleido 3,7.8,1872×1404,Yes,300,Yes,Yes,Android 11,64 GB,4 GB,Yes,5000mAh,310g,No
+Note Air 3,noteair3.jpg,399.99,2023,Carta 1200,10.3,1872×1404,No,227,Yes,Yes,Android 12,64 GB,4 GB,No,3700mAh,450g,Yes
+Go 10.3,go103.jpg,379.99,2024,Carta 1200,10.3,1860×2480,No,300,No,Yes,Android 12,64 GB,4 GB,No,3700mAh,375g,No
+Page,page.jpg,219.99,2023,Carta 1200,7,1680×1264,No,300,Yes,No,Android 11,32 GB,3 GB,No,2300mAh,195g,Yes
+Poke 5,poke5.jpg,169.99,2023,Carta 1200,6,1448×1072,No,300,Yes,No,Android 11,32 GB,2 GB,No,1500mAh,160g,Yes
+Go 6,go6.jpg,149.99,2024,Carta 1300,6,1448×1072,No,300,Yes,No,Android 11,32 GB,2 GB,No,1500mAh,146g,Yes
+Note Air 2,noteair2.jpg,449.99,2022,Carta,10.3,1872×1404,No,227,Yes,Yes,Android 11,64 GB,4 GB,No,3000mAh,420g,No
+Palma,palma.jpg,199.99,2023,Carta 1200,6.13,1648×1236,No,300,Yes,No,Android 11,64 GB,4 GB,Yes,3950mAh,170g,Yes 
