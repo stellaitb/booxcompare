@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOX Device Comparison</title>
+  <meta name="description" content="Compare BOOX e-reader devices by screen size, features, and specifications to find your perfect reading companion.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0A84FF', // Apple blue
+            secondary: '#30D158', // Apple green
+            darkgray: '#1C1C1E', // Apple dark gray
+            lightgray: '#F2F2F7', // Apple light gray
+            mediumgray: '#8E8E93', // Apple medium gray
+            techblue: {
+              100: '#E6F3FF',
+              200: '#C7E2FF',
+              300: '#94C9FF',
+              400: '#62A9F5',
+              500: '#0A84FF',
+              600: '#0066CC',
+              700: '#004C99',
+              800: '#003366',
+              900: '#001A33',
+            },
+            techgray: {
+              100: '#F5F7FA',
+              200: '#E4E7EB',
+              300: '#CBD2D9',
+              400: '#9AA5B1',
+              500: '#7B8794',
+              600: '#616E7C',
+              700: '#52606D',
+              800: '#3E4C59',
+              900: '#323F4B',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #F5F7FA 0%, #E4E7EB 100%);
+    }
+    
+    .tech-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(203, 213, 225, 0.5);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .tech-card:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table-container {
+      position: relative;
+      max-height: 70vh;
+      border-radius: 0.5rem;
+      background: white;
+    }
+    
+    .table-wrapper {
+      overflow: auto;
+      max-height: inherit;
+      margin-top: 0;
+      margin-bottom: 0;
+      background-color: white;
+    }
+    
+    .table-tech {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      margin: 0;
+      background-color: white;
+    }
+    
+    .table-tech thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 0.35rem 0.2rem;
+      background: #94C9FF;
+      color: #323F4B;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      box-shadow: inset 0 1px 0 #94C9FF, inset 0 -1px 0 #94C9FF;
+    }
+    
+    .table-tech td:first-child,
+    .table-tech th:first-child {
+      position: sticky;
+      left: 0;
+      min-width: 190px;
+      max-width: 190px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    
+    .table-tech td:first-child {
+      background: white;
+      z-index: 1;
+      box-shadow: inset -1px 0 0 #E4E7EB;
+    }
+    
+    .table-tech thead th:first-child {
+      z-index: 3;
+      box-shadow: inset 0 1px 0 #94C9FF, inset -1px -1px 0 #94C9FF;
+    }
+    
+    .table-tech td {
+      padding: 0.35rem 0.2rem;
+      background: white;
+      border-bottom: 1px solid #E4E7EB;
+      vertical-align: middle;
+      font-size: 0.9rem;
+    }
+    
+    .table-tech th,
+    .table-tech td {
+      min-width: 130px;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    
+    .table-tech th:nth-child(2),
+    .table-tech td:nth-child(2) {
+      min-width: 160px;
+    }
+    
+    .table-tech tbody tr:hover td {
+      background: rgba(230, 243, 255, 0.4);
+    }
+    
+    .table-tech tbody tr:hover td:first-child {
+      background: rgba(230, 243, 255, 0.4);
+    }
+    
+    .table-tech tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .model-cell {
+      @apply font-medium text-gray-900;
+      min-width: 150px;
+      max-width: 180px;
+    }
+    
+    .image-cell {
+      @apply bg-white;
+      min-width: 120px;
+      max-width: 150px;
+    }
+    
+    .price-cell {
+      @apply font-semibold;
+      color: #2563eb;
+    }
+    
+    .boolean-cell {
+      @apply text-center;
+    }
+    
+    .boolean-cell.true {
+      @apply text-green-600;
+    }
+    
+    .boolean-cell.false {
+      @apply text-red-600;
+    }
+    
+    .noUi-connect {
+      background: #0A84FF;
+    }
+    
+    .sortable:hover {
+      cursor: pointer;
+      background-color: #62A9F5;
+    }
+    
+    .sort-icon::after {
+      content: "↕️";
+      font-size: 0.7rem;
+      margin-left: 4px;
+      opacity: 0.5;
+    }
+    
+    .sort-asc::after {
+      content: "↑";
+      font-size: 0.7rem;
+      margin-left: 4px;
+      opacity: 1;
+    }
+    
+    .sort-desc::after {
+      content: "↓";
+      font-size: 0.7rem;
+      margin-left: 4px;
+      opacity: 1;
+    }
+    
+    .btn {
+      transition: all 0.3s ease;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 1rem;
+    }
+    
+    .btn-primary {
+      background: #0A84FF;
+      color: white;
+      box-shadow: 0 2px 10px rgba(10, 132, 255, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: #0066CC;
+      box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: #616E7C;
+      color: white;
+      box-shadow: 0 2px 10px rgba(82, 96, 109, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      background: #52606D;
+      box-shadow: 0 4px 15px rgba(82, 96, 109, 0.4);
+      transform: translateY(-1px);
+    }
+    
+    .filter-row {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0.75rem;
+      align-items: flex-end;
+      overflow-x: auto;
+      padding: 0.5rem 0 1rem 0;
+      justify-content: space-between;
+    }
+    
+    .filter-item {
+      min-width: 60px;
+      flex-shrink: 0;
+      flex: 0.5;
+      margin-right: 0.25rem;
+    }
+    
+    .filter-item:first-child {
+      min-width: 60px;
+      flex: 0.5;
+    }
+    
+    .price-filter {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      min-width: 280px;
+      flex: 1.2;
+    }
+    
+    .price-slider {
+      width: 180px;
+    }
+    
+    .btn-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: 0.5rem;
+      flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .filter-row {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.75rem;
+      }
+      
+      .filter-item {
+        min-width: 60px;
+      }
+      
+      .price-filter {
+        min-width: 200px;
+        gap: 0.5rem;
+      }
+      
+      .price-slider {
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-techgray-100 text-techgray-900 min-h-screen">
+  <header class="bg-white shadow-md py-6">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl font-bold text-center bg-gradient-to-r from-techblue-600 to-techblue-400 bg-clip-text text-transparent">BOOX Device Comparison</h1>
+    </div>
+  </header>
+  
+  <main class="container mx-auto px-4 py-8">
+    <!-- Filters Section -->
+    <div class="tech-card p-6 mb-8">
+      <h2 class="text-xl font-semibold mb-5 text-techgray-800 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-techblue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+        </svg>
+        Filter Devices
+      </h2>
+      
+      <div class="filter-row">
+        <!-- Screen Size Filter -->
+        <div class="filter-item">
+          <label class="block mb-2 font-medium text-xs text-techgray-700">Screen Size</label>
+          <select id="screenSizeFilter" class="w-full p-1.5 border border-techgray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-techblue-400 text-xs bg-white">
+            <option value="all">All Sizes</option>
+            <option value="small">Small (6" - 7")</option>
+            <option value="medium">Medium (7.8" - 10.3")</option>
+            <option value="large">Large (13.3"+)</option>
+          </select>
+        </div>
+        
+        <!-- Color/B&W Filter -->
+        <div class="filter-item">
+          <label class="block mb-2 font-medium text-xs text-techgray-700">Display</label>
+          <select id="colorFilter" class="w-full p-1.5 border border-techgray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-techblue-400 text-xs bg-white">
+            <option value="all">All Types</option>
+            <option value="Yes">Color</option>
+            <option value="No">B&W</option>
+          </select>
+        </div>
+        
+        <!-- Front Light Filter -->
+        <div class="filter-item">
+          <label class="block mb-2 font-medium text-xs text-techgray-700">Front Light</label>
+          <select id="frontLightFilter" class="w-full p-1.5 border border-techgray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-techblue-400 text-xs bg-white">
+            <option value="all">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        
+        <!-- Stylus Support Filter -->
+        <div class="filter-item">
+          <label class="block mb-2 font-medium text-xs text-techgray-700">Stylus</label>
+          <select id="stylusFilter" class="w-full p-1.5 border border-techgray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-techblue-400 text-xs bg-white">
+            <option value="all">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        
+        <!-- Super Refresh Filter -->
+        <div class="filter-item">
+          <label class="block mb-2 font-medium text-xs text-techgray-700">Super Refresh</label>
+          <select id="superRefreshFilter" class="w-full p-1.5 border border-techgray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-techblue-400 text-xs bg-white">
+            <option value="all">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        
+        <!-- Price Range Filter -->
+        <div class="price-filter">
+          <div>
+            <label class="block mb-2 font-medium text-xs text-techgray-700">Price: <span id="priceRange" class="text-techblue-600 font-semibold">$0-$1000</span></label>
+            <div id="priceSlider" class="price-slider"></div>
+          </div>
+          
+          <div class="btn-container">
+            <button id="resetFilters" class="btn btn-secondary text-xs py-1 px-2">Reset</button>
+            <button id="applyFilters" class="btn btn-primary text-xs py-1 px-2">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Results Count -->
+    <div class="mb-4">
+      <p id="resultsCount" class="text-techgray-600 text-sm font-medium">Showing all devices</p>
+    </div>
+    
+    <!-- Comparison Table -->
+    <div class="tech-card p-0 overflow-hidden">
+      <div class="table-container">
+        <div class="table-wrapper">
+          <table id="comparisonTable" class="table-tech">
+            <thead>
+              <tr>
+                <th class="text-left">Model</th>
+                <th class="text-center">Image</th>
+                <th class="text-center sortable sort-icon" data-sort="price">Price ($)</th>
+                <th class="text-center sortable sort-icon" data-sort="released">Released</th>
+                <th class="text-center">Display Type</th>
+                <th class="text-center sortable sort-icon" data-sort="displaySize">Display Size</th>
+                <th class="text-center">Resolution</th>
+                <th class="text-center">Color?</th>
+                <th class="text-center">PPI</th>
+                <th class="text-center">Light?</th>
+                <th class="text-center">Stylus?</th>
+                <th class="text-center">OS</th>
+                <th class="text-center">Storage</th>
+                <th class="text-center">RAM</th>
+                <th class="text-center">Super Refresh?</th>
+                <th class="text-center sortable sort-icon" data-sort="battery">Battery</th>
+                <th class="text-center sortable sort-icon" data-sort="weight">Weight</th>
+                <th class="text-center">MicroSD?</th>
+              </tr>
+            </thead>
+            <tbody id="deviceTableBody">
+              <!-- Table rows will be inserted here by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white mt-8 py-6 shadow-inner">
+    <div class="container mx-auto text-center px-4">
+      <p class="text-techgray-500 text-sm">© 2024 BOOX Device Comparison Tool. All specifications are for reference only.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Global variables
+    let devices = [];
+    let filteredDevices = [];
+    let currentSort = { column: null, direction: 'asc' };
+    let priceRange = [0, 1000];
+
+    // Initialize price slider
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load CSV data
+      loadDeviceData();
+      
+      // Setup event listeners
+      setupEventListeners();
+    });
+
+    // Load device data from CSV
+    function loadDeviceData() {
+      // 首先尝试使用CSV文件加载数据
+      Papa.parse('data/devices.csv', {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          console.log("CSV Data loaded successfully:", results);
+          processDeviceData(results.data);
+        },
+        error: function(error, file) {
+          console.error('Error loading CSV from file:', error, file);
+          
+          // 如果无法加载CSV文件，尝试使用备用的内联数据
+          const csvData = `Model,Image File,Price ($),Released,Display Type,Display Size (inch),Resolution (pixels W×H),Color Display?,Pixel Density (PPI),Screen Light?,Stylus Input?,Operating System,Internal Storage,RAM,BOOX Super Refresh?,Battery Capacity (mAh),Weight (gram),MicroSD Card Reader?
+Note Max,notemax.jpg,649.99,2025,Carta 1300,13.3,2400×3200,No,300,No,Yes,Android 13,128 GB,6 GB,No,3700mAh,615g,No
+Palma 2,palma2.jpg,279.99,2024,Carta 1200,6.13,824×1648,No,300,Yes,No,Android 13,128 GB,6 GB,Yes,3950mAh,170g,Yes
+Note Air 4 C,noteair4c.jpg,499.99,2024,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 13,64 GB,6 GB,Yes,3700mAh,420g,Yes
+Tab Ultra C Pro,tabultracpro.jpg,599.99,2023,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 12,128 GB,6 GB,Yes,4600mAh,450g,Yes
+Tab Ultra C,tabultrac.jpg,599.99,2023,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 11,128 GB,4 GB,Yes,6300mAh,480g,Yes
+Note Air 3 C,noteair3c.jpg,499.99,2023,Kaleido 3,10.3,1860×2480,Yes,300,Yes,Yes,Android 12,64 GB,4 GB,Yes,3700mAh,430g,Yes
+Tab X,tabx.jpg,799.99,2023,Carta 1250,13.3,1650×2200,No,207,Yes,Yes,Android 11,128 GB,6 GB,Yes,6300mAh,560g,No
+Tab Ultra,tabultra.jpg,499.99,2022,Carta,10.3,1872×1404,No,227,Yes,Yes,Android 11,128 GB,4 GB,No,6300mAh,480g,Yes
+Go Color 7,gocolor7.jpg,249.99,2024,Kaleido 3,7,1680×1264,Yes,300,Yes,No,Android 12,64 GB,4 GB,No,2300mAh,195g,Yes
+Tab Mini C,tabminic.jpg,349.99,2023,Kaleido 3,7.8,1872×1404,Yes,300,Yes,Yes,Android 11,64 GB,4 GB,Yes,5000mAh,310g,No
+Note Air 3,noteair3.jpg,399.99,2023,Carta 1200,10.3,1872×1404,No,227,Yes,Yes,Android 12,64 GB,4 GB,No,3700mAh,450g,Yes
+Go 10.3,go103.jpg,379.99,2024,Carta 1200,10.3,1860×2480,No,300,No,Yes,Android 12,64 GB,4 GB,No,3700mAh,375g,No
+Page,page.jpg,219.99,2023,Carta 1200,7,1680×1264,No,300,Yes,No,Android 11,32 GB,3 GB,No,2300mAh,195g,Yes
+Poke 5,poke5.jpg,169.99,2023,Carta 1200,6,1448×1072,No,300,Yes,No,Android 11,32 GB,2 GB,No,1500mAh,160g,Yes
+Go 6,go6.jpg,149.99,2024,Carta 1300,6,1448×1072,No,300,Yes,No,Android 11,32 GB,2 GB,No,1500mAh,146g,Yes
+Note Air 2,noteair2.jpg,449.99,2022,Carta,10.3,1872×1404,No,227,Yes,Yes,Android 11,64 GB,4 GB,No,3000mAh,420g,No
+Palma,palma.jpg,199.99,2023,Carta 1200,6.13,1648×1236,No,300,Yes,No,Android 11,64 GB,4 GB,Yes,3950mAh,170g,Yes`;
+          
+          Papa.parse(csvData, {
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+              console.log("Using backup inline CSV data");
+              processDeviceData(results.data);
+            }
+          });
+        }
+      });
+    }
+    
+    // 处理设备数据
+    function processDeviceData(data) {
+      devices = data.map(device => {
+        // 检查device是否存在并且是否有所有必需的字段
+        if (!device || !device.Model) {
+          console.error('Invalid device data:', device);
+          return null;
+        }
+        
+        // 确保安全地解析数据
+        try {
+          return {
+            model: device.Model || '',
+            imageFile: device['Image File'] || '',
+            price: parseFloat(device['Price ($)']) || 0,
+            released: parseInt(device.Released) || 0,
+            displayType: device['Display Type'] || '',
+            displaySize: parseFloat(device['Display Size (inch)']) || 0,
+            resolution: device['Resolution (pixels W×H)'] || '',
+            colorDisplay: device['Color Display?'] || 'No',
+            ppi: parseInt(device['Pixel Density (PPI)']) || 0,
+            screenLight: device['Screen Light?'] || 'No',
+            stylusInput: device['Stylus Input?'] || 'No',
+            os: device['Operating System'] || '',
+            storage: device['Internal Storage'] || '',
+            ram: device.RAM || '',
+            superRefresh: device['BOOX Super Refresh?'] || 'No',
+            battery: parseInt((device['Battery Capacity (mAh)'] || '').replace('mAh', '')) || 0,
+            weight: parseInt((device['Weight (gram)'] || '').replace('g', '')) || 0,
+            microSD: device['MicroSD Card Reader?'] || 'No'
+          };
+        } catch (error) {
+          console.error('Error parsing device data:', error, device);
+          return null;
+        }
+      }).filter(device => device !== null); // 过滤掉无效数据
+      
+      // 设置初始过滤设备为所有设备
+      filteredDevices = [...devices];
+      
+      // 初始化价格滑块，使用来自数据的最小和最大值
+      initPriceSlider();
+      
+      // 使用所有设备渲染表格
+      renderTable(filteredDevices);
+    }
+
+    // Initialize price slider
+    function initPriceSlider() {
+      const minPrice = Math.min(...devices.map(device => device.price));
+      const maxPrice = Math.max(...devices.map(device => device.price));
+      
+      priceRange = [minPrice, maxPrice];
+      
+      const priceSlider = document.getElementById('priceSlider');
+      
+      if (priceSlider.noUiSlider) {
+        priceSlider.noUiSlider.destroy();
+      }
+      
+      noUiSlider.create(priceSlider, {
+        start: [minPrice, maxPrice],
+        connect: true,
+        range: {
+          'min': minPrice,
+          'max': maxPrice
+        },
+        step: 10,
+        format: {
+          to: value => Math.round(value),
+          from: value => parseInt(value)
+        }
+      });
+      
+      // Update price range display when slider changes
+      priceSlider.noUiSlider.on('update', function(values) {
+        document.getElementById('priceRange').textContent = `$${values[0]}-$${values[1]}`;
+        priceRange = values;
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Apply filters button
+      document.getElementById('applyFilters').addEventListener('click', applyFilters);
+      
+      // Reset filters button
+      document.getElementById('resetFilters').addEventListener('click', resetFilters);
+      
+      // Sortable column headers
+      document.querySelectorAll('.sortable').forEach(header => {
+        header.addEventListener('click', function() {
+          const column = this.dataset.sort;
+          sortTable(column);
+        });
+      });
+    }
+
+    // Apply all filters
+    function applyFilters() {
+      // Get filter values
+      const screenSize = document.getElementById('screenSizeFilter').value;
+      const colorDisplay = document.getElementById('colorFilter').value;
+      const screenLight = document.getElementById('frontLightFilter').value;
+      const stylusInput = document.getElementById('stylusFilter').value;
+      const superRefresh = document.getElementById('superRefreshFilter').value;
+      
+      // Filter devices based on selected criteria
+      filteredDevices = devices.filter(device => {
+        // Screen Size filter
+        if (screenSize !== 'all') {
+          if (screenSize === 'small' && (device.displaySize < 6 || device.displaySize > 7)) return false;
+          if (screenSize === 'medium' && (device.displaySize < 7.8 || device.displaySize > 10.3)) return false;
+          if (screenSize === 'large' && device.displaySize < 13) return false;
+        }
+        
+        // Color Display filter
+        if (colorDisplay !== 'all' && device.colorDisplay !== colorDisplay) return false;
+        
+        // Screen Light filter
+        if (screenLight !== 'all' && device.screenLight !== screenLight) return false;
+        
+        // Stylus Input filter
+        if (stylusInput !== 'all' && device.stylusInput !== stylusInput) return false;
+        
+        // Super Refresh filter
+        if (superRefresh !== 'all' && device.superRefresh !== superRefresh) return false;
+        
+        // Price Range filter
+        if (device.price < priceRange[0] || device.price > priceRange[1]) return false;
+        
+        return true;
+      });
+      
+      // Update results count
+      document.getElementById('resultsCount').textContent = 
+        filteredDevices.length === devices.length 
+          ? "Showing all devices" 
+          : `Showing ${filteredDevices.length} of ${devices.length} devices`;
+      
+      // Render filtered table
+      renderTable(filteredDevices);
+    }
+
+    // Reset all filters
+    function resetFilters() {
+      // Reset all filter dropdowns
+      document.getElementById('screenSizeFilter').value = 'all';
+      document.getElementById('colorFilter').value = 'all';
+      document.getElementById('frontLightFilter').value = 'all';
+      document.getElementById('stylusFilter').value = 'all';
+      document.getElementById('superRefreshFilter').value = 'all';
+      
+      // Reset price slider
+      const minPrice = Math.min(...devices.map(device => device.price));
+      const maxPrice = Math.max(...devices.map(device => device.price));
+      document.getElementById('priceSlider').noUiSlider.set([minPrice, maxPrice]);
+      
+      // Reset filtered devices to all devices
+      filteredDevices = [...devices];
+      
+      // Update results count
+      document.getElementById('resultsCount').textContent = "Showing all devices";
+      
+      // Render the table with all devices
+      renderTable(filteredDevices);
+    }
+
+    // Sort table by column
+    function sortTable(column) {
+      // Determine sort direction
+      let direction = 'asc';
+      
+      if (currentSort.column === column) {
+        direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+      }
+      
+      // Update current sort
+      currentSort = { column, direction };
+      
+      // Sort devices
+      filteredDevices.sort((a, b) => {
+        let valueA, valueB;
+        
+        // Get values based on column
+        switch (column) {
+          case 'price':
+            valueA = a.price;
+            valueB = b.price;
+            break;
+          case 'released':
+            valueA = a.released;
+            valueB = b.released;
+            break;
+          case 'displaySize':
+            valueA = a.displaySize;
+            valueB = b.displaySize;
+            break;
+          case 'battery':
+            valueA = a.battery;
+            valueB = b.battery;
+            break;
+          case 'weight':
+            valueA = a.weight;
+            valueB = b.weight;
+            break;
+          default:
+            return 0;
+        }
+        
+        // Compare values
+        if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+        if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+      
+      // Update sort icons
+      document.querySelectorAll('.sortable').forEach(header => {
+        header.classList.remove('sort-asc', 'sort-desc');
+        header.classList.add('sort-icon');
+        
+        if (header.dataset.sort === column) {
+          header.classList.remove('sort-icon');
+          header.classList.add(direction === 'asc' ? 'sort-asc' : 'sort-desc');
+        }
+      });
+      
+      // Render sorted table
+      renderTable(filteredDevices);
+    }
+
+    // Render table with device data
+    function renderTable(devices) {
+      const tableBody = document.getElementById('deviceTableBody');
+      
+      // 确保表格主体存在
+      if (!tableBody) {
+        console.error('Table body element not found!');
+        return;
+      }
+      
+      tableBody.innerHTML = '';
+      
+      if (!devices || devices.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.className = 'p-4 text-center text-techgray-500 border-b border-techgray-200';
+        cell.colSpan = 18;
+        cell.textContent = 'No devices match your selected filters.';
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        return;
+      }
+      
+      devices.forEach(device => {
+        if (!device) return; // 跳过无效设备
+        
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-techblue-100 transition-colors';
+        
+        // Model name (sticky column)
+        const modelCell = document.createElement('td');
+        modelCell.className = 'border-b border-techgray-200';
+        modelCell.textContent = device.model || '';
+        row.appendChild(modelCell);
+        
+        // Image
+        const imageCell = document.createElement('td');
+        imageCell.className = 'text-center border-b border-techgray-200';
+        const image = document.createElement('img');
+        image.src = `images/${device.imageFile || ''}`;
+        image.alt = device.model || '';
+        image.className = 'w-32 h-auto mx-auto rounded shadow-sm object-cover';
+        image.onerror = function() {
+          // 图片加载失败时替换为默认图像
+          this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZWVlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iIzk5OTk5OSI+Qk9PWCB7ZGV2aWNlLm1vZGVsfTwvdGV4dD48L3N2Zz4=';
+        };
+        imageCell.appendChild(image);
+        row.appendChild(imageCell);
+        
+        // Other columns
+        const formatPrice = (price) => isNaN(price) ? '$0.00' : '$' + parseFloat(price).toFixed(2);
+        
+        row.appendChild(createCell(formatPrice(device.price)));
+        row.appendChild(createCell(device.released || ''));
+        row.appendChild(createCell(device.displayType || ''));
+        row.appendChild(createCell((device.displaySize || '') + '"'));
+        row.appendChild(createCell(device.resolution || ''));
+        row.appendChild(createCell(device.colorDisplay || ''));
+        row.appendChild(createCell(device.ppi || ''));
+        row.appendChild(createCell(device.screenLight || ''));
+        row.appendChild(createCell(device.stylusInput || ''));
+        row.appendChild(createCell(device.os || ''));
+        row.appendChild(createCell(device.storage || ''));
+        row.appendChild(createCell(device.ram || ''));
+        row.appendChild(createCell(device.superRefresh || ''));
+        row.appendChild(createCell((device.battery || '') + ' mAh'));
+        row.appendChild(createCell((device.weight || '') + ' g'));
+        row.appendChild(createCell(device.microSD || ''));
+        
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Helper function to create table cells
+    function createCell(content) {
+      const cell = document.createElement('td');
+      cell.className = 'text-center border-b border-techgray-200';
+      
+      // 处理长字符串，允许自动换行
+      if (typeof content === 'string' && content.length > 20) {
+        cell.style.whiteSpace = 'normal';
+        cell.style.wordBreak = 'break-word';
+      }
+      
+      // 特殊处理布尔单元格
+      if (content === 'Yes' || content === 'No') {
+        cell.className += content === 'Yes' ? ' text-green-600 font-bold' : ' text-red-600';
+      }
+      
+      cell.textContent = content;
+      return cell;
+    }
+  </script>
+</body>
+</html> 
